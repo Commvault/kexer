@@ -1,0 +1,5 @@
+apiVersion: backup.cv.io/v1
+kind: Cluster
+metadata:
+  name: local
+spec:
