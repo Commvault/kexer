@@ -1,8 +1,0 @@
-apiVersion: backup.cv.io/v1
-kind: Cluster
-metadata:
-  name: remote-openshift-cluster1
-spec:
-  endpointUrl: "https://api.openshift47.gp.cv.commvault.com:6443"
-  secretName: openshift-sa
-  secretNamespace: default
