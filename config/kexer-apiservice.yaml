@@ -1,0 +1,18 @@
+
+apiVersion: apiregistration.k8s.io/v1
+kind: APIService
+metadata:
+  name: v1.backup.cv.io
+  labels:
+    api: kexer
+    apiserver: "true"
+spec:
+  version: v1
+  group: backup.cv.io
+  groupPriorityMinimum: 2000
+  service:
+    name: kexer
+    namespace: kexec-system
+  versionPriority: 10
+  #caBundle: #base64 encoded certificate  
+---

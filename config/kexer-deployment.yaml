@@ -1,0 +1,64 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kexer
+  namespace: kexec-system
+  labels:
+    api: kexer
+    apiserver: "true"
+spec:
+  selector:
+    matchLabels:
+      api: kexer
+      apiserver: "true"
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        api: kexer
+        apiserver: "true"
+    spec:
+      serviceAccount: kexer
+      containers:
+      - name: apiserver
+        image: kexer:1
+        imagePullPolicy: Never
+        volumeMounts:
+        - name: apiserver-certs
+          mountPath: /apiserver.local.config/certificates
+          readOnly: true
+        command:
+        - "./apiserver"
+        args:
+        - "--tls-cert-file=/apiserver.local.config/certificates/tls.crt"
+        - "--tls-private-key-file=/apiserver.local.config/certificates/tls.key"
+        - "--feature-gates=APIPriorityAndFairness=false"
+        # resources:
+        #   requests:
+        #     cpu: 100m
+        #     memory: 20Mi
+        #   limits:
+        #     cpu: 100m
+        #     memory: 30Mi
+      volumes:
+      - name: apiserver-certs
+        secret:
+          secretName: kexer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kexer
+  namespace: kexec-system
+  labels:
+    api: kexer
+    apiserver: "true"
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 443
+  selector:
+    api: kexer
+    apiserver: "true"
