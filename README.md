@@ -2,6 +2,10 @@
 
 Kexer (K8s Executor) is an addon apiserver to execute commands in a Kubernetes cluster. It is designed to be used to offload long running `exec` operations from the main `apiserver`. 
 
+## How It Works!
+
+Kexer acts like a simple proxy service by redirecting all the REST operations to main `apiserver` except the `exec` which are handled directly by calling the `kubelet` endpoint. As a result, the `exec` operations bypass the main apiserver and are handled directly by the `kubelet`.
+
 ### Highlights
 
 - [x] Execute commands in a Kubernetes cluster
@@ -9,6 +13,7 @@ Kexer (K8s Executor) is an addon apiserver to execute commands in a Kubernetes c
 - [x] Support for `kubectl exec` and `kubectl cp` commands
 - [x] Support for `kubectl logs` command
 - [x] Support for authentication and authorization delegation to the main apiserver
+- [x] Delegate rest of the operations to the main apiserver
 
 ### Installation
 
