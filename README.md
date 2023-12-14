@@ -1,10 +1,8 @@
 ## `kexer`
 
-Kexer (K8s Executor) is an addon apiserver to execute commands in a Kubernetes cluster. It is designed to be used to offload long running `exec` operations from the main `apiserver`. 
+Kexer (K8s Executor) is an addon apiserver to execute commands in a Kubernetes cluster. It is designed to be used to offload long running streaming operations like `exec`, `cp` from the main `apiserver`. It can also be used as a proxy for main `apiserver` with rest of the operations proxied to the main `apiserver`.
 
-## How It Works!
-
-Kexer acts like a simple proxy service by redirecting all the REST operations to main `apiserver` except the `exec` which are handled directly by calling the `kubelet` endpoint. As a result, the `exec` operations bypass the main apiserver and are handled directly by the `kubelet`.
+Kexer can also be used as a reverse proxy for clusters configured using a secret with endpoint and service-account token on the cluster that acts a `reverse proxy`.
 
 ### Highlights
 
@@ -13,7 +11,6 @@ Kexer acts like a simple proxy service by redirecting all the REST operations to
 - [x] Support for `kubectl exec` and `kubectl cp` commands
 - [x] Support for `kubectl logs` command
 - [x] Support for authentication and authorization delegation to the main apiserver
-- [x] Delegate rest of the operations to the main apiserver
 
 ### Installation
 
@@ -57,4 +54,16 @@ kubectl exec -it <pod-name> -- <command>
 
 ```bash
 kubectl cp <pod-name>:<path> <local-path>
+```
+### Reverse Proxy
+
+Create a `Secret` object with the following keys. You can use the `sample/cluster-creds-secret.yaml` file as a template.
+
+- `endpointUrl`: The endpoint of the cluster to be proxied
+- `token`: The service account token for the cluster to be proxied
+
+The url for the reverse proxy in the kubeconfig is:
+
+```yaml
+https://<kexer-host>:<kexer-port>/apis/backup.cv.io/v1/namespaces/<secret-namespace>/clusters/<secret-name>/exec
 ```
